@@ -6,13 +6,14 @@ A javascript application made to dynamically manage business hours, typically fo
 
 To avoid multiple connections to the database while modifying the hours, every change is stored locally in a JSON variable which is then sent to the server only when 'Apply' is clicked.
 
+### Here is a [Live version](https://guimauveb.com/projects/businessHours)
+
 ## Features
 - Hours can be displayed in 24h or 12h format
 - Hours are stored on a MySQL database
 - Overlapping hours are visually signaled and kept from being uploaded
 - An 'Holiday mode' allows the user to set all days to 'Closed for business'
 
-## Here is a [Live version](https://guimauveb.com/projects/businessHours)
 
 ## Installation:
 

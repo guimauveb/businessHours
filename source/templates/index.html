@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="fr">
+    <head>
+        <meta charset="utf-8">
+
+        <meta name="viewport" content="initial-scale = .9,maximum-scale = .9" />
+
+        <script src="{{ url_for('static', filename='businessHours.js') }}"></script>
+        <!-- Pass the needed endpoints URLs and the CSRF token to our JS file -->
+        <script type="text/javascript">
+            document.addEventListener('DOMContentLoaded', function() {
+                            businessHours.setEndpointsURLs({{ dbEndpointsJSON|tojson|safe }});
+                            businessHours.setCSRFToken('{{ csrf_token() }}');
+                        });
+        </script>
+        <script type="text/javascript">
+            document.addEventListener('DOMContentLoaded', function() {
+                            indexBusHours.setToday({{ serverTime|tojson|safe }});
+                            indexBusHours.setBusHours({{ days|tojson|safe }});
+                            indexBusHours.getBusinessStatus();
+                        });
+        </script>
+        <script src="{{ url_for('static', filename='indexBusHours.js') }}"></script>
+        <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+        <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+        <title>Business hours manager</title>
+    </head>
+    <body class="sm-section">
+        <header>
+            <div id="header">
+                <div class="nav-container">
+                    <!--navbar-->
+                    <nav>
+                        <div class="left-menu">
+                        </div>
+                        <div class="center-menu">
+                            <a class="nav-item" href="#!">Business Hours Manager</a>
+                        </div>
+                        <div class="right-login">
+                        </div>
+                    </nav>
+                </div>
+            </div>
+        </header>
+        <div class="unique-content">
+            <div class="manage-hours-wrapper">
+                <div id="manage-hours-header">
+                    <svg id="svg" viewBox="0 0 200 150">
+                        <path id="curve" d="M 10 40 Q 95 10 180 42" stroke="transparent" fill="transparent"/>
+
+                        <text width="500">
+                        <textPath stroke="rgba(241, 241, 241, .7)" fill="rgba(241, 241, 241, .7)" id="shop-text" xlink:href="#curve">
+                        GUIMAUVE
+                        </textPath>
+                        </text>
+                    </svg>
+
+                    <div id="business-st-container">
+                    </div>
+                    <div class="hours-header">
+                        <div>OPENING HOURS</div>
+                    </div>
+                </div>
+
+                <div class="manage-hours-body">
+                    <div class="manage-days">
+
+                        {% for day in readableTime %}
+                        <div id="business-{{ day.day }}" class="manage-day">
+                            <div class="week-day">{{ day.day[0]|upper + day.day[1:] }}</div>
+                            <label class="switch">
+                                <input class="day-checkbox" id="{{ day.day }}-checkbox" type="checkbox" onclick="businessHours.markDayAs('{{ day.day }}')" {% if day.status == 1 %} checked {% else %} {% endif %}/>
+                                <span class="slider round"></span>
+                            </label>
+
+                            {% if day.status == 0 %}
+                            <div id="{{ day.day }}-hours" class="hours-container">
+                                <div class="week-day-closed">Closed</div>
+                            </div>
+                            {% else %}
+                            <div id="{{ day.day }}-hours" class="hours-container"> <div class="week-day-open">Open</div>  
+                                {% for h in day.hours %}
+                                <div class="hour-pair-container" id="{{ day.day }}-h-p-{{ h.id }}"><div class="day-hours" style="grid-column: 2;"><input class="time-input" id="appt-time-{{ day.day }}-open-hour-{{ h.id }}" type="time" step="900" name="appt-time-{{ day.day }}-open-{{ h.id }}" value="{{ h.openHour }}" onclick="businessHours.updateRecorder('{{ day.day }}', '{{ h.id }}')"></div><div class="day-hours" style="grid-column: 3;"><input class="time-input" id="appt-time-{{ day.day }}-close-hour-{{ h.id }}" type="time" step="900" name="appt-time-{{ day.day }}-close-{{ h.id }}" value="{{ h.closeHour }}" onclick="businessHours.updateRecorder('{{ day.day }}', '{{ h.id }}')"></div></div><div class="del-hours" id="{{ day.day }}-hours-delete-{{ h.id }}"><a class="" href="#!"  onclick="businessHours.deleteRecorder('{{ day.day }}', '{{ h.id }}')"><i class="fa fa-times"></i></a></div>
+                                {% endfor %}
+                                <div id="add-hours-{{ day.day }}" class="add-hours"><a class="" href="#!" onclick="businessHours.addRecorder('{{ day.day }}', null)"><i class="fa fa-plus"></i></a></div>
+                            </div>
+                            {% endif %}
+
+                        </div>
+                        {% endfor %}
+
+                        {% if not holidays %} 
+                        <div class="apply-btn-wrapper"><a id="apply-btn" class="hours-btn-disabled"  href="#!" onclick="businessHours.updateDB()">Apply</a></div>
+                        {% else %}
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="manage-holiday-mode">
+                    <div class="manage-holiday-mode-text">
+                        <a>Holidays</a>
+                    </div>
+                    <label class="switch">
+                        <input type="checkbox" id="holidaySwitch" onclick="businessHours.holidayMode()" {% if holidays %} checked {% else %} {% endif %}>
+                        <span class="slider round"></span>
+                    </label>
+                </div>
+            </div>
+        </div>
+        <div class="footer-wrapper">
+            <footer class="main-footer">
+                <div class="left-info-footer">
+                </div>
+                <div class="center-tags-footer">
+                    <a class="footer-link" href="#!">guimauve</a>
+                </div>
+                <div class="right-social-footer">
+                </div>
+            </footer>
+        </div>
+        <!--footer-wrapper-->
+    </body>
+    <!-- TODO - CRUD business hours -->
+    <script src="{{ url_for('static', filename='sign.js') }}"></script>
+
+</html>

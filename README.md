@@ -37,6 +37,7 @@ To avoid multiple connections to the database while modifying the hours, every c
 
 
 ## Improvements to be made
+    - Limit fetch() calls to a strict minimum
     - Better signaling of overlapping hours
     - Code needs some cleanup
 

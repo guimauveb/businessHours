@@ -24,6 +24,7 @@ To avoid multiple connections to the database while modifying the hours, every c
     $ pip install -r requirements.txt
 ```
 4. Create the required databases using the commands in **db/hours.sql**
+5. Add your database credentials to **application.py**
 5. From the source folder export the following variables:
 ```
     $ export FLASK_APP="application.py"

@@ -1,6 +1,6 @@
 # Business Hours Manager
 
-![Business Hours Manager](/imgs/screenshot.jpg)
+![Business Hours Manager](/imgs/logo.png)
 
 A javascript application made to dynamically manage business hours, typically for a shop owner.
 

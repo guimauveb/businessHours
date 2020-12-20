@@ -48,7 +48,7 @@ var indexBusHours = {};
 
     this.getNextDay = function(d) {
         if (d == "sunday") {
-            return "monday"; 
+            return "monday";
         }
         else if (d == "monday") {
             return "tuesday";
@@ -75,7 +75,7 @@ var indexBusHours = {};
 
     this.getPrevDay = function(d) {
         if (d == "sunday") {
-            return "saturday"; 
+            return "saturday";
         }
         else if (d == "monday") {
             return "sunday";
@@ -120,10 +120,14 @@ var indexBusHours = {};
             var op = businessHours[idx]["hours"][i].openHour;
             var cl = businessHours[idx]["hours"][i].closeHour;
 
+            if ((businessHours[idx]["day"] == "saturday") && (cl < 1439)) {
+                cl += 10080;
+            }
+
             if (now >= op && now <= cl && businessHours[idx]["status"] != 0) {
                 open = true;
                 break;
-            } 
+            }
         }
 
         if (!open) {
@@ -131,10 +135,14 @@ var indexBusHours = {};
                 var op = businessHours[idxNext]["hours"][i].openHour;
                 var cl = businessHours[idxNext]["hours"][i].closeHour;
 
+                if ((businessHours[idxNext]["day"] == "saturday") && (cl < 1439)) {
+                    cl += 10080;
+                }
+
                 if (now >= op && now <= cl && businessHours[idxNext]["status"] != 0) {
                     open = true;
                     break;
-                } 
+                }
             }
         }
 
@@ -143,15 +151,18 @@ var indexBusHours = {};
                 var op = businessHours[idxPrev]["hours"][i].openHour;
                 var cl = businessHours[idxPrev]["hours"][i].closeHour;
 
+                if ((businessHours[idxPrev]["day"] == "saturday") && (cl < 1439)) {
+                    cl += 10080;
+                }
                 if (now >= op && now <= cl && businessHours[idxPrev]["status"] != 0) {
                     open = true;
                     break;
-                } 
+                }
             }
         }
         if (open) {
             this.createHTMLOpen();
-        } 
+        }
         else {
             this.createHTMLClosed();
         }
